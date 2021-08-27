@@ -1,0 +1,281 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Product Service API Contracts
+paths:
+  /products:
+    post:
+      operationId: createProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Products'
+      responses:
+        '200':
+          description: Responsds with a single benefit claim config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitResponse'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /products/{product_code}:
+    get:
+      operationId: getProductDetail
+      parameters:
+        - in: path
+          name: product_code
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Responds with a product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    HealthPrequotePayload:
+      type: object
+      required: [category, lastName, email, password, repeatedPassword]
+      properties:
+        parent_category:
+          type: string
+          example: 'MICROHEALTH'
+        category:
+          type: string
+          example: 'IPOP'
+        covereds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoveredsPayload'
+        uuid:
+          type: string
+          example: '30dcccfb-2f1c-40ad-026c-818a3d1b28da'
+          
+    CoveredsPayload:
+        type: object
+        required: [gender, birthdate]
+        properties:
+          gender:
+            type: string
+            example: Male
+          birthdate:
+            type: string
+            example: '1994-03-02'
+    
+    
+    Products:
+      type: object
+      required: [id, 
+          product_code,
+          product_name,
+          partner_code,
+          country,
+          currency_code,
+          product_summary,
+          product_description,
+          product_terms,
+          claim_description,
+          is_renewal_product,
+          language,
+          timezone,
+          parent_category,
+          category_name,
+          category_code,
+          insurance,
+          premium,
+          admin_fee,
+          hardcopy_admin_fee,
+          tax_fee,
+          stamp_fee,
+          is_active,
+          created_at,
+          updated_at
+          ]
+      properties:
+          id:
+            type: string
+            example: "30dcccfb-2f1c-40ad-026c-818a3d1b28da"
+          product_code:
+            type: string
+            example: "HEALTH-LIPPO-IPOP-01"
+          product_name:
+            type: string
+            example: "Lippo HealthPlus Family Complete - Silver"
+          partner_code:
+            type: string
+            example: 
+          country:
+            type: string
+            example: "ID"
+          currency:
+            type: string
+            example: "IDR"
+          product_summary:
+            type: string
+            example: "<li>Manfaat kamar hingga Rp 550ribu/hari</li>"
+          product_description:
+            type: string
+            example: "Menjamin perawatan Rawat Inap dan Rawat Jalan di rumah sakit ataupun klinik tempat di mana Tertanggung dirawat disebabkan oleh penyakit ataupun kecelakaan. <br/> Batas manfaat rawat inap tahunan hingga Rp 150,000,000. <br/> Batas manfaat rawat jalan tahunan hingga Rp 12,500,000."
+          product_terms:
+            type: string
+            example: "Untuk penyakit yang sudah ada sebelum tanggal efektif kepesertaan <b><i>(pre-existing condition)</i></b> dan penyakit-penyakit kritis seperti pada Ringkasan Informasi Produk (di bawah) berlaku masa tunggu <b>12 bulan</b> sejak peserta terdaftar sebagai tertanggung (hanya berlaku di tahun pertama kepesertaan), Umur masuk peserta adalah <b>18 - 60 tahun"
+          claim_description:
+            type: string
+            example: "Download aplikasi e-Benefit di Appstore atau Google Play Store dan lakukan langkah aktivasi dengan e-mail tertanggung yang dimasukkan pada saat pembelian"
+          is_renewal_product:
+            type: boolean
+            example: false
+          language:
+            type: string
+            example: "ID"
+          parent_category:
+            type: string
+            example: "MICROHEALTH"
+          category_name:
+            type: string
+            example: "Rawat Inap + Rawat Jalan"
+          category_code:
+            type: string
+            example: "IPOP"
+          insurance:
+              $ref: '#/components/schemas/Insurance'
+          premium:
+            type: number
+            example: 50000.0
+          premium_unit_duration:
+            type: string
+            example: "MONTH"
+          premium_unit_duration_amount:
+            type: number
+            example: 6
+          admin_fee:
+            type: number
+            example: 1000.0
+          hardcopy_admin_fee:
+            type: number
+            example: 1000.0
+          tax_fee:
+            type: number
+            example: 1500.0
+          is_active:
+            type: boolean
+            example: true
+          benefits:
+            $ref: '#/components/schemas/Benefit'
+          created_at:
+            type: string
+            example: '2020-01-01T00:00:00+Z'
+          updated_at:
+            type: string
+            example: '2020-01-01T00:00:00+Z'
+    Benefit:
+      type: object
+      required: [id, name, type, description, logo]
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: "Manfaat Rawat Jalan"
+        alternative_name:
+          type: string
+          example: "Jalan Rawat Manfaat"
+        description:
+          type: string
+          example: "Ya di rawat sih"
+        type:
+          type: string
+          example: "BENEFIT_TYPE"
+        logo:
+          type: string
+          example: "https://asssets.qoala.app/this_benefit_logo.png"
+        claim_required_documents:
+          items:
+             $ref: '#/components/schemas/Documents'
+              
+        claim_supported_documents:
+          items:
+             $ref: '#/components/schemas/Documents'
+    
+    Documents:
+      type: object
+      required: [id, name, code, description, ocr_url]
+      properties:
+          id:
+            type: number
+            example: 1
+          name:
+            type: string
+            example: "Customer KTP"
+          code:
+            type: string
+            example: "KTP_PHOTO"
+          description:
+            type: string
+            example: "Photo of insured KTP"
+            
+            
+    Insurance:
+      type: object
+      required: [id, name, code, logo]
+      properties:
+          id:
+            type: number
+            example: 1
+          name:
+            type: string
+            example: "AXA Insurance"
+          code:
+            type: string
+            example: "AXA"
+          logo:
+            type: string
+            example: "https://assets.qoala.app/somelogo.png"
+      
+    ProductsResponse:
+      type: object
+      required: [data, error]
+      properties:
+          data:
+              $ref: '#/components/schemas/Products'
+          error:
+            $ref: '#/components/schemas/Error'
+            
+    BenefitResponse:
+      type: object
+      required: [data, error]
+      properties:
+          data:
+              $ref: '#/components/schemas/Benefit'
+          error:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
